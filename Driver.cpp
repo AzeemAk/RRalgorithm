@@ -13,22 +13,30 @@ void findavgTime(int processes[], int n, int bt[],
 int main()
 {
     int numProcesses;
-    int priority[3];
-    int arrivalTime[3];
-    int burstTime[3];
+    int *priority;
+    int *arrivalTime;
+    int *burstTime;
     ifstream myFile;
     myFile.open("input.txt");
+    
+    arrivalTime;
+    burstTime;
     if (myFile.is_open()) {
-        while (!myFile.eof()) {
-            myFile >> numProcesses;
-            for (int i = 0; i < numProcesses; i++)
-            {
-                myFile >> priority[i];
-                myFile >> arrivalTime[i];
-                myFile >> burstTime[i];
-            }
-
+        myFile >> numProcesses;
+        priority = new int[numProcesses];
+        arrivalTime = new int[numProcesses];
+        burstTime = new int[numProcesses];
+        for (int i = 0; i < numProcesses; i++)
+        {
+            myFile >> priority[i];
+            myFile >> arrivalTime[i];
+            myFile >> burstTime[i];
         }
+        // Time quantum
+        int quantum = 2;
+        //findavgTime(processes, n, burst_time, quantum); 
+
+        findavgTime(priority, numProcesses, burstTime, quantum);
     }
     else
         cout << "Error. File was not found." << endl;
@@ -36,15 +44,12 @@ int main()
 
     // process id's
     //int processes[] = { 1, 2, 3 };
-    int n = sizeof priority / sizeof priority[0];
+    
 
     // Burst time of all processes
     //int burst_time[] = { 10, 5, 8 };   
 
-    // Time quantum
-    int quantum = 2; 
-    //findavgTime(processes, n, burst_time, quantum); 
-    findavgTime(priority, n, burstTime, quantum);
+    
     return 0;
 }
 // Function to find the waiting time for all
