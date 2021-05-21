@@ -50,10 +50,11 @@ void rr(int numOfProcesses, int pid[], int arrivalTime[], int burstTime[], int t
 	int order, timer = 0, temp1 = 0, temp2 = 0, sumWait = 0, switchTime = 5, totalSwitch = 0;
 	float avgWait = 0, avgTAT = 0, cpuEff = 0;
 	bool complete[50];
-	for (int i = 0; i < numOfProcesses; i++) {
+	for (int i = 0; i < numOfProcesses; i++) { //initializing arrays
 		burstTimeLeft[i] = burstTime[i];
 		complete[i] = false;
 		waitTime[i] = 0;
+		serviceTime[i] = 0;
 	}
 	cout << "Before Sort: " << endl;
 	for (int i = 0; i < numOfProcesses; i++)
@@ -107,16 +108,20 @@ void rr(int numOfProcesses, int pid[], int arrivalTime[], int burstTime[], int t
 	while (!allComplete(complete, numOfProcesses)) {
 		
 		cout << "-----------------------" << endl;
-		cout << "Cycle " << cycle << ":" << endl;
+		cout << "Cycle " << cycle << ":" << endl;          //keeping track of how many times we cycle the round robin
+		
 		for (int i = 0; i < numOfProcesses; i++)
 		{
+			
 			if (complete[i] == false)
 			{
+				
 				if (burstTimeLeft[i] < tq) {
+					
 					timer += burstTimeLeft[i];
 					for (int j = 0; j < numOfProcesses; j++)
 					{
-						if (!j == i)      //adding to wait time if process is not being run
+						if (!j == i && complete[i] == false)      //adding to wait time if process is not being run
 						{
 							waitTime[j] += burstTimeLeft[i];
 						}
@@ -127,12 +132,13 @@ void rr(int numOfProcesses, int pid[], int arrivalTime[], int burstTime[], int t
 					
 				}
 				else {
+					
 					burstTimeLeft[i] -= tq;
 					timer += tq;
 					totalSwitch += switchTime;
 					for (int j = 0; j < numOfProcesses; j++)
 					{
-						if (!j == i)
+						if (!j == i && complete[i] == false)
 						{
 							waitTime[j] += tq;
 						}
@@ -148,6 +154,7 @@ void rr(int numOfProcesses, int pid[], int arrivalTime[], int burstTime[], int t
 				if (burstTimeLeft[i] < 0) {
 					cout << "Error. BurstTimeLeft was a negative number. " << endl;
 				}
+				
 			}
 			
 		}
@@ -167,13 +174,16 @@ void rr(int numOfProcesses, int pid[], int arrivalTime[], int burstTime[], int t
 	{
 		turnAroundTime[i] = completionTime[i] - arrivalTime[i];
 		sumWait += waitTime[i];
+		cpuEff += burstTime[i];
 
 	}
 	
 	avgWait = (sumWait / numOfProcesses);
 	
-	
-	
+	cout << "Round Robin(Time Quantum = " << tq <<")"<< endl << endl;
+	cout << "Total Time required is " << timer << endl;
+	cout << "Average waiting time is " << avgWait << " time units " << endl;
+	cout << "CPU Efficiency is " << (cpuEff/(cpuEff+totalSwitch)) * 100 << "%" << endl << endl;
 
 	for(int i = 0; i < numOfProcesses; i++)
 	{
@@ -182,10 +192,7 @@ void rr(int numOfProcesses, int pid[], int arrivalTime[], int burstTime[], int t
 		cout << "Turnaround Time = " << turnAroundTime[i] << endl << endl;
 
 	}
-	cout << "Total Time Running = " << timer << endl;
-	cout << "Average waiting time is " << avgWait << " time units " << endl;
-	cout << "Total switching time is " << totalSwitch << endl;
-	cout << "CPU Efficiency is " << "%" << cpuEff * 100 << endl;
-	cout << "timer = " << timer << " totalSwitch = " << totalSwitch << endl;
+	
+	
 
 }
